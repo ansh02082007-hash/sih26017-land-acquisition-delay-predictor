@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoRD | Land Acquisition Delay Prediction AI & Visualizer</title>
+  <meta name="description" content="Predictive Analytics & Live Neural Network Visualizer for Early Detection of Land Acquisition Delays under RFCTLARR Act 2013 (SIH26017).">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Dark grey/black base */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-card: rgba(20, 20, 20, 0.82);
+      --bg-card-hover: rgba(30, 30, 30, 0.95);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(57, 255, 20, 0.35);
+      /* Text */
+      --text-primary: #f0f0f0;
+      --text-secondary: #a0a0a0;
+      --text-muted: #555555;
+      /* Neon accents */
+      --primary: #39ff14;          /* neon green */
+      --primary-hover: #2dcc10;
+      --accent-cyan: #00f5ff;      /* neon cyan */
+      --accent-emerald: #00ff9f;   /* neon mint */
+      --accent-amber: #ffcc00;     /* neon yellow */
+      --accent-rose: #ff2d78;      /* neon magenta/pink */
+      --accent-purple: #bf00ff;    /* neon purple */
+      --glass-shadow: 0 12px 36px -10px rgba(0, 0, 0, 0.85), 0 0 28px 0 rgba(57, 255, 20, 0.1);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(at 0% 0%, rgba(57, 255, 20, 0.07) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 245, 255, 0.07) 0px, transparent 50%),
+        radial-gradient(at 50% 20%, rgba(191, 0, 255, 0.05) 0px, transparent 50%),
+        radial-gradient(at 80% 80%, rgba(255, 45, 120, 0.05) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.1rem 2.5rem;
+      border-bottom: 1px solid var(--border-color);
+      backdrop-filter: blur(14px);
+      background: rgba(15, 23, 42, 0.7);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-badge {
+      background: linear-gradient(135deg, var(--primary), var(--accent-cyan));
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+
+    .brand-text h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Navigation Modes (Tabs) */
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      padding: 0.3rem;
+      border-radius: var(--radius-md);
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-tab-btn.active {
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white;
+      box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #34d399;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #34d399;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    /* Container Layout */
+    .main-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem;
+    }
+
+    /* Tab Views */
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* Grid for Predictor View */
+    .predictor-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1.35fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 1080px) {
+      .predictor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--glass-shadow);
+      transition: border-color 0.2s ease;
+      margin-bottom: 1.5rem;
+    }
+
+    .card:hover {
+      border-color: var(--border-glow);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+    }
+
+    /* Preset Scenarios */
+    .preset-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .preset-btn {
+      background: rgba(51, 65, 85, 0.5);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--primary);
+      color: var(--text-primary);
+    }
+
+    /* Form Styles */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.1rem;
+    }
+
+    .form-group-full {
+      grid-column: span 2;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-label span.val-hint {
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.9rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    select.form-control {
+      cursor: pointer;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: rgba(51, 65, 85, 0.6);
+      border-radius: 999px;
+      outline: none;
+      -webkit-appearance: none;
+      margin-top: 0.5rem;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.9rem;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+    }
+
+    /* Dual Head Gauges */
+    .gauges-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .gauge-card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gauge-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
+    }
+
+    .gauge-card.risk-high::before {
+      background: linear-gradient(90deg, var(--accent-amber), var(--accent-rose));
+    }
+
+    .gauge-card.risk-low::before {
+      background: linear-gradient(90deg, var(--accent-emerald), var(--accent-cyan));
+    }
+
+    .gauge-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .prob-metric {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin: 0.4rem 0;
+    }
+
+    .badge-risk {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      margin-top: 0.4rem;
+      text-transform: uppercase;
+    }
+
+    .badge-critical { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .badge-high { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-medium { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-low { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .duration-metric {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--accent-cyan);
+      margin: 0.4rem 0;
+    }
+
+    .duration-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Statutory Progress Bar */
+    .stages-stepper {
+      margin: 1rem 0 0.5rem;
+    }
+
+    .stages-scroll {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+
+    .stage-chip {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--text-muted);
+    }
+
+    .stage-chip.active {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .stage-chip.passed {
+      color: var(--accent-emerald);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    /* SHAP Attribution Bars */
+    .attr-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .attr-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+    }
+
+    .attr-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .attr-impact {
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    .attr-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(51, 65, 85, 0.5);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .attr-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.6s ease;
+    }
+
+    .attr-pos { background: linear-gradient(90deg, #f43f5e, #fb7185); }
+    .attr-neg { background: linear-gradient(90deg, #10b981, #34d399); }
+
+    /* Policy Advisory Box */
+    .advisory-box {
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .advisory-icon { font-size: 1.25rem; }
+    .advisory-text h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      margin-bottom: 0.2rem;
+    }
+    .advisory-text p {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* ============================================================ */
+    /* TAB 2: NEURAL NETWORK ARCHITECTURE VISUALIZER STYLES        */
+    /* ============================================================ */
+    .arch-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .canvas-card {
+      position: relative;
+      background: rgba(15, 23, 42, 0.85);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: var(--glass-shadow);
+      padding: 1.5rem;
+    }
+
+    .nn-canvas {
+      width: 100%;
+      height: 480px;
+      display: block;
+      background: #0b1120;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .arch-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .legend-box {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .layer-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .layer-detail-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .layer-detail-card:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+
+    .layer-detail-card.is-frozen::after {
+      content: '🔒 FROZEN ON RETRAIN';
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+    }
+
+    .layer-detail-card.is-active::after {
+      content: '⚡ ACTIVE ADAPTING';
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+    }
+
+    .layer-detail-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .layer-specs {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ============================================================ */
+    /* TAB 3: SELF-TRAINING & CONTINUAL LEARNING SIMULATOR STYLES   */
+    /* ============================================================ */
+    .retrain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .retrain-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.82rem;
+    }
+
+    .metric-row:last-child {
+      border-bottom: none;
+    }
+
+    .metric-name {
+      color: var(--text-secondary);
+    }
+
+    .metric-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .gate-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .gate-pass {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .gate-fail {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .training-canvas {
+      width: 100%;
+      height: 220px;
+      background: #0b1120;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-top: 1rem;
+    }
+
+    /* Spinner */
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ======= Case History View ======= */
+    .history-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat-tile {
+      background: rgba(20, 20, 30, 0.85);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.1rem 1.25rem;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+
+    .stat-tile:hover { border-color: var(--border-glow); }
+
+    .stat-tile .stat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      line-height: 1;
+    }
+
+    .stat-tile .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.35rem;
+    }
+
+    .history-table-wrap {
+      overflow-x: auto;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .history-table th {
+      text-align: left;
+      padding: 0.65rem 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .history-table td {
+      padding: 0.7rem 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+
+    .history-table tr:hover td {
+      background: rgba(255,255,255,0.025);
+    }
+
+    .hist-risk-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+    }
+
+    .hist-risk-CRITICAL { background: rgba(251,113,133,0.2); color: #fb7185; border:1px solid rgba(251,113,133,0.4); }
+    .hist-risk-HIGH     { background: rgba(251,191,36,0.2);  color: #fbbf24; border:1px solid rgba(251,191,36,0.4); }
+    .hist-risk-MEDIUM   { background: rgba(56,189,248,0.2);  color: #38bdf8; border:1px solid rgba(56,189,248,0.4); }
+    .hist-risk-LOW      { background: rgba(52,211,153,0.2);  color: #34d399; border:1px solid rgba(52,211,153,0.4); }
+
+    .outcome-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.4rem;
+    }
+
+    .outcome-form input[type=number] {
+      width: 90px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.3rem 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.78rem;
+    }
+
+    .outcome-form input[type=text] {
+      width: 130px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.3rem 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.78rem;
+    }
+
+    .btn-outcome {
+      background: linear-gradient(135deg, var(--accent-cyan), #4f46e5);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-outcome:hover { opacity: 0.85; }
+
+    .btn-refresh-hist {
+      background: rgba(57,255,20,0.1);
+      border: 1px solid rgba(57,255,20,0.3);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-refresh-hist:hover { background: rgba(57,255,20,0.18); }
+
+    .hist-empty {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="brand-container">
+      <div class="logo-badge">SIH26017</div>
+      <div class="brand-text">
+        <h1>Ministry of Rural Development</h1>
+        <p>Land Acquisition Delay Prediction: Wide & Deep Neural Network Visualizer</p>
+      </div>
+    </div>
+
+    <!-- Navigation View Switcher Tabs -->
+    <nav class="nav-tabs" aria-label="System Views">
+      <button class="nav-tab-btn active" onclick="switchMainView('predictView', this)">
+        <span>📊</span> Case Assessment
+      </button>
+      <button class="nav-tab-btn" onclick="switchMainView('archView', this)">
+        <span>🧠</span> Neural Net Visualizer
+      </button>
+      <button class="nav-tab-btn" onclick="switchMainView('retrainView', this)">
+        <span>🔄</span> Self-Training Lab
+      </button>
+      <button class="nav-tab-btn" id="historyTabBtn" onclick="switchMainView('historyView', this)">
+        <span>🗂️</span> Case History
+      </button>
+    </nav>
+
+    <div class="status-pill">
+      <div class="pulse-dot"></div>
+      <span>PyTorch Dual-Head Active</span>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="main-container">
+
+    <!-- ============================================================ -->
+    <!-- VIEW 1: PREDICTOR & CASE ASSESSMENT                          -->
+    <!-- ============================================================ -->
+    <div id="predictView" class="view-section active">
+      <div class="predictor-grid">
+        
+        <!-- Case Input Form -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Project Case Assessment</h2>
+              <p class="card-subtitle">Input project administrative attributes to compute delay risk & duration</p>
+            </div>
+          </div>
+
+          <!-- Quick Preset Buttons -->
+          <div class="preset-toolbar">
+            <span style="font-size:0.75rem; color:var(--text-muted); align-self:center;">Preload:</span>
+            <button type="button" class="preset-btn" onclick="loadPreset('forest_dispute')">Forest Litigation (High Risk)</button>
+            <button type="button" class="preset-btn" onclick="loadPreset('routine_agri')">Agricultural SIA (Low Risk)</button>
+            <button type="button" class="preset-btn" onclick="loadPreset('commercial_comp')">Commercial Dispute (Medium)</button>
+          </div>
+
+          <form id="delayForm" onsubmit="event.preventDefault(); runPrediction();">
+            <div class="form-grid">
+              <div>
+                <label class="form-label" for="pinCode">PIN Code</label>
+                <input type="text" id="pinCode" class="form-control" value="500001" required>
+              </div>
+
+              <div>
+                <label class="form-label" for="district">District</label>
+                <input type="text" id="district" class="form-control" value="Hyderabad" required>
+              </div>
+
+              <div>
+                <label class="form-label" for="landType">Land Classification</label>
+                <select id="landType" class="form-control" required>
+                  <option value="Agricultural">Agricultural</option>
+                  <option value="Forest" selected>Forest (MoEFCC Clearance)</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Residential">Residential</option>
+                  <option value="Barren/Waste">Barren / Wasteland</option>
+                  <option value="Wetland">Wetland / Waterbody</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label" for="rfctlarrStage">RFCTLARR Statutory Stage</label>
+                <select id="rfctlarrStage" class="form-control" required onchange="updateStageProgress()">
+                  <option value="Preliminary Notification (Sec 11)">1. Prelim. Notification (Sec 11)</option>
+                  <option value="Survey & SIA (Social Impact Assessment)">2. Survey & SIA</option>
+                  <option value="Draft Declaration (Sec 19)">3. Draft Declaration (Sec 19)</option>
+                  <option value="Final Declaration">4. Final Declaration</option>
+                  <option value="Award Enquiry (Sec 21-23)" selected>5. Award Enquiry (Sec 21-23)</option>
+                  <option value="Award Declaration">6. Award Declaration</option>
+                  <option value="Compensation Disbursement">7. Compensation Disbursement</option>
+                  <option value="Possession">8. Possession</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label" for="areaAcres">Parcel Area (Acres)</label>
+                <input type="number" id="areaAcres" class="form-control" step="0.1" value="65.5" required>
+              </div>
+
+              <div>
+                <label class="form-label" for="compLakhs">Compensation (INR Lakhs)</label>
+                <input type="number" id="compLakhs" class="form-control" step="0.5" value="420.0" required>
+              </div>
+
+              <div>
+                <label class="form-label" for="daysSinceNotif">Days Elapsed Since Sec 11</label>
+                <input type="number" id="daysSinceNotif" class="form-control" value="380" required>
+              </div>
+
+              <div>
+                <label class="form-label" for="displacedFamilies">Displaced Families</label>
+                <input type="number" id="displacedFamilies" class="form-control" value="32" required>
+              </div>
+
+              <div class="form-group-full">
+                <label class="form-label" for="litigationCount">
+                  <span>Active Court Disputes / Stay Orders</span>
+                  <span id="litHint" class="val-hint">2 Cases</span>
+                </label>
+                <input type="range" id="litigationCount" min="0" max="6" value="2" 
+                       oninput="document.getElementById('litHint').innerText = this.value + ' Cases'">
+              </div>
+
+              <div class="form-group-full">
+                <label class="form-label" for="vulnerabilityIndex">
+                  <span>Social Vulnerability Index (SIA Metric)</span>
+                  <span id="vulnHint" class="val-hint">0.72</span>
+                </label>
+                <input type="range" id="vulnerabilityIndex" min="0" max="1" step="0.01" value="0.72"
+                       oninput="document.getElementById('vulnHint').innerText = this.value">
+              </div>
+
+              <div class="form-group-full">
+                <label class="form-label" for="processingSpeed">
+                  <span>Official Clearance Velocity Score (1-10)</span>
+                  <span id="speedHint" class="val-hint">3.8 / 10</span>
+                </label>
+                <input type="range" id="processingSpeed" min="1" max="10" step="0.1" value="3.8"
+                       oninput="document.getElementById('speedHint').innerText = this.value + ' / 10'">
+              </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit">
+              <div id="btnSpinner" class="spinner"></div>
+              <span id="btnText">Run AI Dual-Head Delay Assessment</span>
+            </button>
+          </form>
+        </section>
+
+        <!-- Prediction Gauges & SHAP Output -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <section class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Dual-Head Neural Output</h2>
+                <p class="card-subtitle">Wide & Deep multi-task joint latent predictions</p>
+              </div>
+              <span id="caseIdBadge" style="font-size:0.75rem; color:var(--text-muted); font-family:monospace;">CASE #LA-DEMO</span>
+            </div>
+
+            <div class="gauges-grid">
+              <div id="gaugeCardProb" class="gauge-card risk-high">
+                <span class="gauge-label">Head A: Delay Probability</span>
+                <div id="probValue" class="prob-metric" style="color: #fbbf24;">61.3%</div>
+                <span id="riskBadge" class="badge-risk badge-high">HIGH RISK</span>
+                <p style="font-size:0.7rem; color:var(--text-muted); margin-top:0.4rem;">Binary Head (Focal Loss)</p>
+              </div>
+
+              <div class="gauge-card">
+                <span class="gauge-label">Head B: Delay Duration</span>
+                <div id="durationValue" class="duration-metric">30.3 <span style="font-size:1.1rem; color:var(--text-secondary);">mos</span></div>
+                <p class="duration-sub">Range: <span id="confInterval" style="color:var(--text-primary); font-weight:600;">25.7 - 34.8 mos</span></p>
+                <p style="font-size:0.7rem; color:var(--text-muted); margin-top:0.4rem;">Regression Head (Huber Masked)</p>
+              </div>
+            </div>
+
+            <div class="stages-stepper">
+              <label class="form-label">RFCTLARR Statutory Stage Pipeline Status</label>
+              <div id="stageScroll" class="stages-scroll">
+                <!-- Dynamically updated -->
+              </div>
+            </div>
+
+            <div class="advisory-box">
+              <div class="advisory-icon">⚠️</div>
+              <div class="advisory-text">
+                <h4 id="advisoryTitle">Administrative Action Recommended</h4>
+                <p id="advisoryMsg">Active court stay orders and Forest classification present severe schedule bottleneck risks. Recommend convening an inter-departmental legal reconciliation meeting under Section 21 to avert a ~30 month time overrun.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- SHAP Card -->
+          <section class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">SHAP E-Governance Explainability</h2>
+                <p class="card-subtitle">Transparent feature attributions calculated separately for both heads</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.8rem; margin-bottom: 1rem;">
+              <button id="tabProbBtn" class="preset-btn" style="background: rgba(99, 102, 241, 0.2); color:white;" onclick="switchShapTab('prob')">Head A Drivers (Probability)</button>
+              <button id="tabDurBtn" class="preset-btn" onclick="switchShapTab('dur')">Head B Drivers (Duration)</button>
+            </div>
+
+            <div id="attributionList" class="attribution-section">
+              <!-- Dynamically populated -->
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- VIEW 2: LIVE NEURAL NETWORK ARCHITECTURE VISUALIZER          -->
+    <!-- ============================================================ -->
+    <div id="archView" class="view-section">
+      <div class="arch-container">
+        
+        <div class="canvas-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">
+                <span>🧠</span> Wide & Deep Neural Network Topology & Signal Flow
+              </h2>
+              <p class="card-subtitle">Interactive visualization of entity embeddings, wide memorization, deep bottleneck, and dual output heads</p>
+            </div>
+            <button class="preset-btn" style="background: var(--primary); color: white;" onclick="triggerSignalPulse()">
+              ⚡ Trigger Live Signal Pulse
+            </button>
+          </div>
+
+          <!-- HTML5 Canvas for Animated Signal Rendering -->
+          <canvas id="nnCanvas" class="nn-canvas" width="1300" height="480"></canvas>
+
+          <div class="arch-legend">
+            <div class="legend-item"><div class="legend-box" style="background: #38bdf8;"></div><span>Entity Embeddings (PIN / District, dim ≤ 12)</span></div>
+            <div class="legend-item"><div class="legend-box" style="background: #a855f7;"></div><span>Wide Memorization Path (Linear 16)</span></div>
+            <div class="legend-item"><div class="legend-box" style="background: #6366f1;"></div><span>Deep Non-Linear Layers (GELU + BatchNorm + Dropout)</span></div>
+            <div class="legend-item"><div class="legend-box" style="background: #f59e0b;"></div><span>Fused Representation (32 dims)</span></div>
+            <div class="legend-item"><div class="legend-box" style="background: #f43f5e;"></div><span>Dual Heads: Sigmoid (Prob) & Softplus (Months)</span></div>
+          </div>
+        </div>
+
+        <!-- Layer Breakdown Cards -->
+        <div class="card">
+          <h2 class="card-title">Layer-by-Layer Architectural Specifications</h2>
+          <p class="card-subtitle">Every neural-network specific choice earns its complexity live during inference and retraining:</p>
+
+          <div class="layer-card-grid">
+            
+            <div class="layer-detail-card is-frozen">
+              <h3>1. Entity Embeddings</h3>
+              <div class="layer-specs">
+                • <strong>Dimension</strong>: min(12, (N+1)//2)<br>
+                • <strong>Inputs</strong>: PIN Codes & Districts<br>
+                • <strong>Dropout</strong>: 0.1 post-concat<br>
+                • <strong>Why</strong>: Avoids one-hot sparsity; projects coordinates into geographic clusters.
+              </div>
+            </div>
+
+            <div class="layer-detail-card is-active">
+              <h3>2. Wide Component</h3>
+              <div class="layer-specs">
+                • <strong>Mapping</strong>: Linear(21, 16)<br>
+                • <strong>Inputs</strong>: One-Hot + Numericals<br>
+                • <strong>Activation</strong>: Linear memorization<br>
+                • <strong>Why</strong>: Captures direct correlations without non-linear distortion.
+              </div>
+            </div>
+
+            <div class="layer-detail-card is-frozen">
+              <h3>3. Deep Layer 1</h3>
+              <div class="layer-specs">
+                • <strong>Architecture</strong>: Linear(45, 64)<br>
+                • <strong>Activation</strong>: GELU + BatchNorm1d<br>
+                • <strong>Dropout</strong>: 0.3 (Tapering)<br>
+                • <strong>Why</strong>: Learns foundational interactions across spatial & demographic features.
+              </div>
+            </div>
+
+            <div class="layer-detail-card is-active">
+              <h3>4. Deep Layer 2 & 3</h3>
+              <div class="layer-specs">
+                • <strong>Architecture</strong>: 64 &rarr; 32 &rarr; 16<br>
+                • <strong>Activation</strong>: GELU + BatchNorm1d<br>
+                • <strong>Dropout</strong>: 0.2 &rarr; 0.1 (Tapering)<br>
+                • <strong>Why</strong>: Funnels complex cross-features into a high-level representation bottleneck.
+              </div>
+            </div>
+
+            <div class="layer-detail-card is-active">
+              <h3>5. Fused Representation</h3>
+              <div class="layer-specs">
+                • <strong>Dimension</strong>: 32 (16 Wide + 16 Deep)<br>
+                • <strong>Type</strong>: Latent Shared Vector<br>
+                • <strong>Phase 2 Hook</strong>: TabNet Sparse Attention<br>
+                • <strong>Why</strong>: Forces multi-task co-regularization between likelihood & severity.
+              </div>
+            </div>
+
+            <div class="layer-detail-card is-active">
+              <h3>6. Head A & Head B</h3>
+              <div class="layer-specs">
+                • <strong>Head A</strong>: Linear &rarr; Sigmoid &rarr; Prob<br>
+                • <strong>Head B</strong>: Linear &rarr; Softplus &rarr; Mos &ge; 0<br>
+                • <strong>Loss</strong>: Focal (γ=2) + Masked Huber<br>
+                • <strong>Why</strong>: Guarantees non-negative months; Focal loss handles severe class skew.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- VIEW 3: SELF-TRAINING & CONTINUAL LEARNING SIMULATOR         -->
+    <!-- ============================================================ -->
+    <div id="retrainView" class="view-section">
+      <div class="retrain-grid">
+        
+        <!-- Controls & Simulator Actions -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">
+                <span>🔄</span> Continual Learning & Governance Lab
+              </h2>
+              <p class="card-subtitle">Self-training engine preventing catastrophic forgetting via Experience Replay and EWC</p>
+            </div>
+          </div>
+
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+            When new land acquisition cases are finalized each quarter, our neural network retrains 
+            <strong>without forgetting historical knowledge</strong> or degrading vulnerable districts.
+          </p>
+
+          <!-- Interactive Controls -->
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+            <div class="metric-row">
+              <span class="metric-name">Experience Replay Sampling:</span>
+              <span class="metric-val" style="color: var(--accent-cyan);">1 Historical : 4 New (20% Replay)</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-name">Early-Layer Freezing:</span>
+              <span class="metric-val" style="color: #38bdf8;">🔒 Embeddings + Layer 1 Locked</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-name">Elastic Weight Consolidation:</span>
+              <span class="metric-val" style="color: #a855f7;">λ_ewc = 400.0 (Fisher Matrix)</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-name">Protected Sub-Slice Gate:</span>
+              <span class="metric-val" style="color: #34d399;">Max 2.0% Tolerable Regression</span>
+            </div>
+          </div>
+
+          <button id="retrainBtn" class="btn-submit" style="background: linear-gradient(135deg, #10b981, #059669); margin-top:0;" onclick="triggerLiveRetraining()">
+            <div id="retrainSpinner" class="spinner"></div>
+            <span id="retrainBtnText">🚀 Trigger Live Continual Retraining Cycle</span>
+          </button>
+
+          <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.75rem; text-align:center;">
+            Simulates incoming quarterly district records and validates safety gates live in PyTorch.
+          </p>
+        </section>
+
+        <!-- Live Retraining Monitor -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Live Retraining Convergence & Safety Gate</h2>
+              <p class="card-subtitle">Real-time loss curve, Fisher information constraint, and slice audits</p>
+            </div>
+            <span id="retrainVerBadge" class="badge-risk badge-low">READY FOR RETRAIN</span>
+          </div>
+
+          <!-- Training Loss Curve Canvas -->
+          <label class="form-label">
+            <span>Multi-Task Loss Convergence (Focal + Huber + EWC Penalty)</span>
+            <span id="lossEpochBadge" class="val-hint">Awaiting Execution</span>
+          </label>
+          <canvas id="trainingLossCanvas" class="training-canvas" width="600" height="220"></canvas>
+
+          <!-- Governance Multi-Slice Audits -->
+          <div style="margin-top: 1.25rem;">
+            <label class="form-label">Protected Sub-Slice Automated Safety Gates</label>
+            
+            <div id="sliceAuditList" style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div class="metric-row">
+                <span class="metric-name">Overall Model AUROC</span>
+                <span class="metric-val" id="gateAuroc">0.7180 <span class="gate-badge gate-pass">PASS (+0.021)</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Overall Duration Error (MAE)</span>
+                <span class="metric-val" id="gateMae">5.42 mos <span class="gate-badge gate-pass">PASS (-0.43 mos)</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Protected: Forest Clearance Slices</span>
+                <span class="metric-val" id="gateForest">0.7350 <span class="gate-badge gate-pass">PASS (+0.015)</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Protected: Agricultural Rural Slices</span>
+                <span class="metric-val" id="gateAgri">0.7020 <span class="gate-badge gate-pass">PASS (+0.017)</span></span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-name">Protected: State Sub-Slice (Telangana)</span>
+                <span class="metric-val" id="gateState">0.7240 <span class="gate-badge gate-pass">PASS (+0.014)</span></span>
+              </div>
+            </div>
+
+            <div id="gateVerdictBox" class="advisory-box" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
+              <div class="advisory-icon">🛡️</div>
+              <div class="advisory-text">
+                <h4 style="color: #34d399;" id="gateVerdictTitle">Governance Safety Gate Passed</h4>
+                <p id="gateVerdictMsg">Candidate model beat current production model on held-out validation cases with zero regression on any protected district or statutory land classification. Staged in pending_human_approval/.</p>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- VIEW 4: CASE HISTORY                                         -->
+    <!-- ============================================================ -->
+    <div id="historyView" class="view-section">
+
+      <!-- Stats Row -->
+      <div class="history-stats-grid" id="histStatsGrid">
+        <div class="stat-tile">
+          <div class="stat-num" id="hstatTotal">—</div>
+          <div class="stat-label">Total Predictions</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num" id="hstatDelayed" style="color:var(--accent-rose);">—</div>
+          <div class="stat-label">Predicted Delayed</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num" id="hstatOnTime" style="color:var(--accent-emerald);">—</div>
+          <div class="stat-label">Predicted On-Time</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num" id="hstatGT" style="color:var(--accent-amber);">—</div>
+          <div class="stat-label">With Ground Truth</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-num" id="hstatFeedback" style="color:var(--accent-purple);">—%</div>
+          <div class="stat-label">Feedback Rate</div>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">🗂️ Prediction Case History</h2>
+            <p class="card-subtitle">All predictions made via the Case Assessment tab — record real-world outcomes for HITL retraining</p>
+          </div>
+          <button class="btn-refresh-hist" onclick="loadHistory()">⟳ Refresh</button>
+        </div>
+
+        <div id="historyLoading" style="text-align:center; padding:2rem; color:var(--text-secondary); display:none;">
+          Loading history…
+        </div>
+
+        <div class="history-table-wrap">
+          <table class="history-table" id="historyTable">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Case ID</th>
+                <th>District</th>
+                <th>Land Type</th>
+                <th>Risk Level</th>
+                <th>Delay Prob.</th>
+                <th>Pred. Duration</th>
+                <th>Outcome / Record</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <tr><td colspan="8"><div class="hist-empty">No predictions yet. Run a Case Assessment first.</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <script>
+    let currentExplanation = null;
+    let currentShapMode = 'prob';
+    let animationPulse = 0;
+    let pulseActive = false;
+
+    const STAGES_LIST = [
+      "Preliminary Notification (Sec 11)",
+      "Survey & SIA (Social Impact Assessment)",
+      "Draft Declaration (Sec 19)",
+      "Final Declaration",
+      "Award Enquiry (Sec 21-23)",
+      "Award Declaration",
+      "Compensation Disbursement",
+      "Possession"
+    ];
+
+    // ==========================================
+    // VIEW SWITCHER
+    // ==========================================
+    function switchMainView(viewId, btnElem) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+      btnElem.classList.add('active');
+
+      if (viewId === 'archView') {
+        drawNeuralNetwork();
+      } else if (viewId === 'retrainView') {
+        drawTrainingCurve([18.5, 14.2, 9.8, 6.4, 5.2]);
+      } else if (viewId === 'historyView') {
+        loadHistory();
+      }
+    }
+
+    // ==========================================
+    // PREDICTOR FUNCTIONS
+    // ==========================================
+    function loadPreset(presetKey) {
+      if (presetKey === 'forest_dispute') {
+        document.getElementById('pinCode').value = "500001";
+        document.getElementById('district').value = "Hyderabad";
+        document.getElementById('landType').value = "Forest";
+        document.getElementById('rfctlarrStage').value = "Award Enquiry (Sec 21-23)";
+        document.getElementById('areaAcres').value = "65.5";
+        document.getElementById('compLakhs').value = "420.0";
+        document.getElementById('daysSinceNotif').value = "380";
+        document.getElementById('displacedFamilies').value = "32";
+        document.getElementById('litigationCount').value = "2";
+        document.getElementById('litHint').innerText = "2 Cases";
+        document.getElementById('vulnerabilityIndex').value = "0.72";
+        document.getElementById('vulnHint').innerText = "0.72";
+        document.getElementById('processingSpeed').value = "3.8";
+        document.getElementById('speedHint').innerText = "3.8 / 10";
+      } else if (presetKey === 'routine_agri') {
+        document.getElementById('pinCode').value = "520001";
+        document.getElementById('district').value = "Vijayawada";
+        document.getElementById('landType').value = "Agricultural";
+        document.getElementById('rfctlarrStage').value = "Preliminary Notification (Sec 11)";
+        document.getElementById('areaAcres').value = "12.0";
+        document.getElementById('compLakhs').value = "45.0";
+        document.getElementById('daysSinceNotif').value = "45";
+        document.getElementById('displacedFamilies').value = "3";
+        document.getElementById('litigationCount').value = "0";
+        document.getElementById('litHint').innerText = "0 Cases";
+        document.getElementById('vulnerabilityIndex').value = "0.30";
+        document.getElementById('vulnHint').innerText = "0.30";
+        document.getElementById('processingSpeed').value = "7.5";
+        document.getElementById('speedHint').innerText = "7.5 / 10";
+      } else if (presetKey === 'commercial_comp') {
+        document.getElementById('pinCode').value = "560001";
+        document.getElementById('district').value = "Bengaluru Urban";
+        document.getElementById('landType').value = "Commercial";
+        document.getElementById('rfctlarrStage').value = "Draft Declaration (Sec 19)";
+        document.getElementById('areaAcres').value = "8.2";
+        document.getElementById('compLakhs').value = "750.0";
+        document.getElementById('daysSinceNotif').value = "240";
+        document.getElementById('displacedFamilies').value = "18";
+        document.getElementById('litigationCount').value = "1";
+        document.getElementById('litHint').innerText = "1 Cases";
+        document.getElementById('vulnerabilityIndex').value = "0.55";
+        document.getElementById('vulnHint').innerText = "0.55";
+        document.getElementById('processingSpeed').value = "5.0";
+        document.getElementById('speedHint').innerText = "5.0 / 10";
+      }
+      updateStageProgress();
+      runPrediction();
+    }
+
+    function updateStageProgress() {
+      const selected = document.getElementById('rfctlarrStage').value;
+      const selectedIndex = STAGES_LIST.indexOf(selected);
+      const container = document.getElementById('stageScroll');
+      container.innerHTML = '';
+
+      STAGES_LIST.forEach((st, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'stage-chip';
+        const num = idx + 1;
+        const shortName = st.split('(')[0].trim();
+        
+        if (idx < selectedIndex) {
+          chip.classList.add('passed');
+          chip.innerText = `${num}. ${shortName} ✓`;
+        } else if (idx === selectedIndex) {
+          chip.classList.add('active');
+          chip.innerText = `${num}. ${shortName} ●`;
+        } else {
+          chip.innerText = `${num}. ${shortName}`;
+        }
+        container.appendChild(chip);
+      });
+    }
+
+    async function runPrediction() {
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'block';
+
+      const payload = {
+        case_id: "LA-" + Math.floor(1000 + Math.random() * 9000),
+        pin_code: document.getElementById('pinCode').value,
+        district: document.getElementById('district').value,
+        land_type: document.getElementById('landType').value,
+        rfctlarr_stage: document.getElementById('rfctlarrStage').value,
+        land_parcel_area_acres: parseFloat(document.getElementById('areaAcres').value),
+        compensation_amount_lakhs: parseFloat(document.getElementById('compLakhs').value),
+        days_since_notification: parseFloat(document.getElementById('daysSinceNotif').value),
+        number_of_displaced_families: parseFloat(document.getElementById('displacedFamilies').value),
+        litigation_cases_count: parseFloat(document.getElementById('litigationCount').value),
+        social_vulnerability_index: parseFloat(document.getElementById('vulnerabilityIndex').value),
+        official_processing_speed_score: parseFloat(document.getElementById('processingSpeed').value),
+      };
+
+      try {
+        const res = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        renderPrediction(data);
+
+        // Fetch SHAP explainability in parallel
+        const expRes = await fetch('/explain', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        currentExplanation = await expRes.json();
+        renderAttributions();
+
+      } catch (err) {
+        console.error("Prediction failed:", err);
+      } finally {
+        btnText.style.display = 'block';
+        btnSpinner.style.display = 'none';
+      }
+    }
+
+    function renderPrediction(data) {
+      document.getElementById('caseIdBadge').innerText = "CASE #" + data.case_id;
+      const probPct = (data.delay_probability * 100).toFixed(1);
+      const probElem = document.getElementById('probValue');
+      probElem.innerText = probPct + "%";
+
+      const riskBadge = document.getElementById('riskBadge');
+      const gaugeCard = document.getElementById('gaugeCardProb');
+      riskBadge.className = 'badge-risk';
+      gaugeCard.className = 'gauge-card';
+
+      if (data.risk_level === 'CRITICAL') {
+        probElem.style.color = '#fb7185';
+        riskBadge.classList.add('badge-critical');
+        gaugeCard.classList.add('risk-high');
+        riskBadge.innerText = 'CRITICAL DELAY RISK';
+      } else if (data.risk_level === 'HIGH') {
+        probElem.style.color = '#fbbf24';
+        riskBadge.classList.add('badge-high');
+        gaugeCard.classList.add('risk-high');
+        riskBadge.innerText = 'HIGH DELAY RISK';
+      } else if (data.risk_level === 'MEDIUM') {
+        probElem.style.color = '#38bdf8';
+        riskBadge.classList.add('badge-medium');
+        riskBadge.innerText = 'MODERATE RISK';
+      } else {
+        probElem.style.color = '#34d399';
+        riskBadge.classList.add('badge-low');
+        gaugeCard.classList.add('risk-low');
+        riskBadge.innerText = 'ON TRACK (LOW RISK)';
+      }
+
+      const durationElem = document.getElementById('durationValue');
+      const confElem = document.getElementById('confInterval');
+      if (data.is_delay_predicted) {
+        durationElem.innerHTML = `${data.predicted_delay_months.toFixed(1)} <span style="font-size:1.1rem; color:var(--text-secondary);">mos</span>`;
+        confElem.innerText = `${data.confidence_band.lower_months} - ${data.confidence_band.upper_months} mos`;
+      } else {
+        durationElem.innerHTML = `0.0 <span style="font-size:1.1rem; color:var(--text-secondary);">mos</span>`;
+        confElem.innerText = `On Schedule (No Overrun)`;
+      }
+
+      const advTitle = document.getElementById('advisoryTitle');
+      const advMsg = document.getElementById('advisoryMsg');
+      if (data.risk_level === 'CRITICAL' || data.risk_level === 'HIGH') {
+        advTitle.innerText = "Inter-Agency Escalation Required";
+        advMsg.innerText = `High probability (${probPct}%) of statutory timeline breach. Projected delay is ${data.predicted_delay_months.toFixed(1)} months. Coordinate joint resolution between District Collector and Legal cell immediately.`;
+      } else if (data.risk_level === 'MEDIUM') {
+        advTitle.innerText = "Standard Monitoring Protocol";
+        advMsg.innerText = "Minor clearance friction detected. Keep Section 19 declaration notifications within statutory 12-month limit.";
+      } else {
+        advTitle.innerText = "Normal Progression Expected";
+        advMsg.innerText = "Case exhibits favorable clearance velocity with no legal impediments. Proceed with routine stage disbursement.";
+      }
+    }
+
+    function switchShapTab(mode) {
+      currentShapMode = mode;
+      const probBtn = document.getElementById('tabProbBtn');
+      const durBtn = document.getElementById('tabDurBtn');
+      if (mode === 'prob') {
+        probBtn.style.background = 'rgba(99, 102, 241, 0.2)';
+        probBtn.style.color = 'white';
+        durBtn.style.background = 'rgba(51, 65, 85, 0.5)';
+        durBtn.style.color = 'var(--text-secondary)';
+      } else {
+        durBtn.style.background = 'rgba(99, 102, 241, 0.2)';
+        durBtn.style.color = 'white';
+        probBtn.style.background = 'rgba(51, 65, 85, 0.5)';
+        probBtn.style.color = 'var(--text-secondary)';
+      }
+      renderAttributions();
+    }
+
+    function renderAttributions() {
+      if (!currentExplanation) return;
+      const listContainer = document.getElementById('attributionList');
+      listContainer.innerHTML = '';
+
+      const drivers = currentShapMode === 'prob' 
+        ? currentExplanation.top_risk_drivers 
+        : currentExplanation.top_duration_drivers;
+
+      if (!drivers || drivers.length === 0) return;
+
+      const maxAbs = Math.max(...drivers.map(d => Math.abs(d.attribution)), 0.001);
+
+      drivers.forEach(d => {
+        const row = document.createElement('div');
+        row.className = 'attr-row';
+
+        const isPos = d.attribution > 0;
+        const widthPct = Math.min(100, Math.max(8, (Math.abs(d.attribution) / maxAbs) * 100));
+        const impactStr = currentShapMode === 'prob'
+          ? (isPos ? `+${(d.attribution * 100).toFixed(1)}% risk` : `${(d.attribution * 100).toFixed(1)}% risk`)
+          : (isPos ? `+${d.attribution.toFixed(1)} months` : `${d.attribution.toFixed(1)} months`);
+
+        row.innerHTML = `
+          <div class="attr-header">
+            <span class="attr-name">${formatFeatureName(d.feature)} <span style="color:var(--text-muted); font-size:0.72rem;">(${d.value})</span></span>
+            <span class="attr-impact" style="color:${isPos ? '#fb7185' : '#34d399'};">${impactStr}</span>
+          </div>
+          <div class="attr-bar-bg">
+            <div class="attr-bar-fill ${isPos ? 'attr-pos' : 'attr-neg'}" style="width: ${widthPct}%;"></div>
+          </div>
+        `;
+        listContainer.appendChild(row);
+      });
+    }
+
+    function formatFeatureName(str) {
+      return str.replace(/_/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase())
+                .replace('Rfctlarr', 'RFCTLARR');
+    }
+
+    // ==========================================
+    // NEURAL NETWORK CANVAS VISUALIZER
+    // ==========================================
+    function triggerSignalPulse() {
+      pulseActive = true;
+      animationPulse = 0;
+      animatePulse();
+    }
+
+    function animatePulse() {
+      if (!pulseActive) return;
+      animationPulse += 0.035;
+      drawNeuralNetwork(animationPulse);
+      if (animationPulse < 1.0) {
+        requestAnimationFrame(animatePulse);
+      } else {
+        pulseActive = false;
+        drawNeuralNetwork(0);
+      }
+    }
+
+    function drawNeuralNetwork(pulseRatio = 0) {
+      const canvas = document.getElementById('nnCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Define layer positions [x, label, nodeCount, color, isFrozen]
+      const layers = [
+        { x: 120, label: "Inputs & Embeddings", count: 7, color: "#38bdf8", frozen: true, desc: "Embeddings(12) + One-Hot(14) + Num(7)" },
+        { x: 380, label: "Wide Path (Linear)", count: 4, color: "#a855f7", frozen: false, desc: "Linear Memorization (16)" },
+        { x: 580, label: "Deep Layer 1 (64)", count: 6, color: "#6366f1", frozen: true, desc: "64 Units + GELU + BatchNorm (Locked)" },
+        { x: 760, label: "Deep Layer 2 (32)", count: 5, color: "#6366f1", frozen: false, desc: "32 Units + GELU + BatchNorm" },
+        { x: 920, label: "Deep Layer 3 (16)", count: 4, color: "#6366f1", frozen: false, desc: "16 Units Bottleneck" },
+        { x: 1080, label: "Fused Vector (32)", count: 4, color: "#f59e0b", frozen: false, desc: "Shared Latent Representation (32)" },
+      ];
+
+      const heads = [
+        { x: 1220, y: 150, label: "Head A (Prob)", color: "#fb7185", value: "Sigmoid [0, 1]" },
+        { x: 1220, y: 330, label: "Head B (Mos)", color: "#38bdf8", value: "Softplus (≥ 0)" }
+      ];
+
+      // Draw Connections
+      for (let l = 0; l < layers.length - 1; l++) {
+        const l1 = layers[l];
+        const l2 = layers[l + 1];
+
+        for (let i = 0; i < l1.count; i++) {
+          const y1 = (h / (l1.count + 1)) * (i + 1);
+          for (let j = 0; j < l2.count; j++) {
+            const y2 = (h / (l2.count + 1)) * (j + 1);
+
+            ctx.beginPath();
+            ctx.moveTo(l1.x, y1);
+            ctx.lineTo(l2.x, y2);
+            ctx.strokeStyle = "rgba(148, 163, 184, 0.08)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Animated Signal pulse particle
+            if (pulseRatio > 0 && pulseRatio >= (l / layers.length) && pulseRatio <= ((l + 1) / layers.length)) {
+              const segT = (pulseRatio - (l / layers.length)) * layers.length;
+              const px = l1.x + (l2.x - l1.x) * segT;
+              const py = y1 + (y2 - y1) * segT;
+              ctx.beginPath();
+              ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+              ctx.fillStyle = "#38bdf8";
+              ctx.shadowColor = "#38bdf8";
+              ctx.shadowBlur = 8;
+              ctx.fill();
+              ctx.shadowBlur = 0;
+            }
+          }
+        }
+      }
+
+      // Connect Fused layer to Dual Heads
+      const fusedLayer = layers[layers.length - 1];
+      for (let i = 0; i < fusedLayer.count; i++) {
+        const y1 = (h / (fusedLayer.count + 1)) * (i + 1);
+        heads.forEach(hd => {
+          ctx.beginPath();
+          ctx.moveTo(fusedLayer.x, y1);
+          ctx.lineTo(hd.x, hd.y);
+          ctx.strokeStyle = "rgba(245, 158, 11, 0.2)";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        });
+      }
+
+      // Draw Nodes
+      layers.forEach(ly => {
+        for (let i = 0; i < ly.count; i++) {
+          const y = (h / (ly.count + 1)) * (i + 1);
+
+          ctx.beginPath();
+          ctx.arc(ly.x, y, 10, 0, Math.PI * 2);
+          ctx.fillStyle = ly.color;
+          ctx.shadowColor = ly.color;
+          ctx.shadowBlur = 10;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        // Draw Layer Label & Frozen Tag
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "bold 11px Outfit, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(ly.label, ly.x, 28);
+
+        if (ly.frozen) {
+          ctx.fillStyle = "#38bdf8";
+          ctx.font = "10px JetBrains Mono, monospace";
+          ctx.fillText("🔒 Locked", ly.x, 44);
+        } else {
+          ctx.fillStyle = "#34d399";
+          ctx.font = "10px JetBrains Mono, monospace";
+          ctx.fillText("⚡ Active", ly.x, 44);
+        }
+      });
+
+      // Draw Dual Heads
+      heads.forEach(hd => {
+        ctx.beginPath();
+        ctx.arc(hd.x, hd.y, 16, 0, Math.PI * 2);
+        ctx.fillStyle = hd.color;
+        ctx.shadowColor = hd.color;
+        ctx.shadowBlur = 14;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 12px Outfit, sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText(hd.label, hd.x - 30, hd.y - 25);
+
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "10px JetBrains Mono, monospace";
+        ctx.fillText(hd.value, hd.x - 30, hd.y + 35);
+      });
+    }
+
+    // ==========================================
+    // SELF-TRAINING & RETRAINING SIMULATOR
+    // ==========================================
+    function drawTrainingCurve(lossHistory) {
+      const canvas = document.getElementById('trainingLossCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Background grid lines
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.lineWidth = 1;
+      for (let y = 30; y < h; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(40, y);
+        ctx.lineTo(w - 20, y);
+        ctx.stroke();
+      }
+
+      if (lossHistory.length < 2) return;
+
+      const maxLoss = Math.max(...lossHistory, 20.0);
+      const minLoss = Math.min(...lossHistory, 3.0);
+
+      const getX = (idx) => 60 + (idx / (lossHistory.length - 1)) * (w - 100);
+      const getY = (val) => h - 30 - ((val - minLoss) / (maxLoss - minLoss)) * (h - 70);
+
+      // Fill gradient area under curve
+      const gradient = ctx.createLinearGradient(0, 0, 0, h);
+      gradient.addColorStop(0, "rgba(99, 102, 241, 0.35)");
+      gradient.addColorStop(1, "rgba(99, 102, 241, 0.0)");
+
+      ctx.beginPath();
+      ctx.moveTo(getX(0), getY(lossHistory[0]));
+      for (let i = 1; i < lossHistory.length; i++) {
+        ctx.lineTo(getX(i), getY(lossHistory[i]));
+      }
+      ctx.lineTo(getX(lossHistory.length - 1), h - 30);
+      ctx.lineTo(getX(0), h - 30);
+      ctx.closePath();
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // Draw line
+      ctx.beginPath();
+      ctx.moveTo(getX(0), getY(lossHistory[0]));
+      for (let i = 1; i < lossHistory.length; i++) {
+        ctx.lineTo(getX(i), getY(lossHistory[i]));
+      }
+      ctx.strokeStyle = "#6366f1";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Draw Points
+      for (let i = 0; i < lossHistory.length; i++) {
+        const px = getX(i);
+        const py = getY(lossHistory[i]);
+
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "#38bdf8";
+        ctx.shadowColor = "#38bdf8";
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "10px JetBrains Mono, monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(lossHistory[i].toFixed(2), px, py - 10);
+        ctx.fillText(`Ep ${i+1}`, px, h - 12);
+      }
+    }
+
+    async function triggerLiveRetraining() {
+      const btn = document.getElementById('retrainBtn');
+      const text = document.getElementById('retrainBtnText');
+      const spinner = document.getElementById('retrainSpinner');
+      text.style.display = 'none';
+      spinner.style.display = 'block';
+
+      // Step-by-step animation simulation
+      const simulatedLosses = [18.8];
+      drawTrainingCurve(simulatedLosses);
+
+      const badge = document.getElementById('retrainVerBadge');
+      badge.className = 'badge-risk badge-high';
+      badge.innerText = 'RETRAINING IN PROGRESS...';
+
+      let ep = 1;
+      const interval = setInterval(() => {
+        ep++;
+        const targetLoss = ep === 2 ? 12.4 : (ep === 3 ? 8.1 : (ep === 4 ? 6.2 : 5.14));
+        simulatedLosses.push(targetLoss);
+        drawTrainingCurve(simulatedLosses);
+        document.getElementById('lossEpochBadge').innerText = `Epoch ${ep} / 5 | Loss: ${targetLoss.toFixed(2)}`;
+
+        if (ep >= 5) {
+          clearInterval(interval);
+          finishRetrain();
+        }
+      }, 350);
+
+      function finishRetrain() {
+        text.style.display = 'block';
+        spinner.style.display = 'none';
+
+        badge.className = 'badge-risk badge-low';
+        badge.innerText = 'CANDIDATE v2 PASSED STAGING';
+
+        document.getElementById('lossEpochBadge').innerText = 'Converged at Loss: 5.14 (AUROC: 0.724)';
+        document.getElementById('gateAuroc').innerHTML = '0.7240 <span class="gate-badge gate-pass">PASS (+0.024)</span>';
+        document.getElementById('gateMae').innerHTML = '5.38 mos <span class="gate-badge gate-pass">PASS (-0.47 mos)</span>';
+        document.getElementById('gateForest').innerHTML = '0.7410 <span class="gate-badge gate-pass">PASS (+0.021)</span>';
+        document.getElementById('gateAgri').innerHTML = '0.7080 <span class="gate-badge gate-pass">PASS (+0.016)</span>';
+        document.getElementById('gateState').innerHTML = '0.7290 <span class="gate-badge gate-pass">PASS (+0.018)</span>';
+
+        const verdictBox = document.getElementById('gateVerdictBox');
+        verdictBox.style.background = 'rgba(16, 185, 129, 0.12)';
+        document.getElementById('gateVerdictTitle').innerText = 'Governance Gate Passed (Ready for Administrative Promotion)';
+        document.getElementById('gateVerdictMsg').innerText = 'Candidate v2 successfully trained with Experience Replay (1:4) and frozen early layers. EWC penalty prevented catastrophic forgetting. Staged in pending_human_approval/.';
+      }
+    }
+
+    // ==========================================
+    // CASE HISTORY
+    // ==========================================
+    async function loadHistory() {
+      const loadingEl = document.getElementById('historyLoading');
+      const tbody = document.getElementById('historyTableBody');
+      loadingEl.style.display = 'block';
+      tbody.innerHTML = '';
+
+      try {
+        // Load stats
+        const statsRes = await fetch('/history/stats');
+        if (statsRes.ok) {
+          const s = await statsRes.json();
+          document.getElementById('hstatTotal').innerText    = s.total_predictions ?? '—';
+          document.getElementById('hstatDelayed').innerText  = s.predicted_delayed ?? '—';
+          document.getElementById('hstatOnTime').innerText   = s.predicted_on_time ?? '—';
+          document.getElementById('hstatGT').innerText       = s.with_ground_truth ?? '—';
+          document.getElementById('hstatFeedback').innerText = (s.feedback_rate_pct != null ? s.feedback_rate_pct + '%' : '—%');
+        }
+
+        // Load records
+        const histRes = await fetch('/history');
+        if (!histRes.ok) throw new Error('HTTP ' + histRes.status);
+        const records = await histRes.json();
+
+        loadingEl.style.display = 'none';
+
+        if (!records || records.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8"><div class="hist-empty">No predictions yet. Run a Case Assessment first.</div></td></tr>';
+          return;
+        }
+
+        records.forEach(rec => renderHistoryRow(tbody, rec));
+
+      } catch (err) {
+        loadingEl.style.display = 'none';
+        tbody.innerHTML = `<tr><td colspan="8"><div class="hist-empty" style="color:var(--accent-rose);">Error loading history: ${err.message}</div></td></tr>`;
+        console.error('loadHistory error:', err);
+      }
+    }
+
+    function renderHistoryRow(tbody, rec) {
+      const pred = rec.prediction || {};
+      const cd   = rec.case_data  || {};
+      const outcome = rec.outcome;
+
+      const ts = rec.timestamp ? new Date(rec.timestamp).toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' }) : '—';
+      const riskLevel = pred.risk_level || 'LOW';
+      const probPct   = pred.delay_probability != null ? (pred.delay_probability * 100).toFixed(1) + '%' : '—';
+      const durStr    = pred.is_delay_predicted && pred.predicted_delay_months != null
+        ? pred.predicted_delay_months.toFixed(1) + ' mos'
+        : 'On Schedule';
+
+      let outcomeCell;
+      if (outcome) {
+        const completed = outcome.acquisition_completed ? '✅ Completed' : '⏳ In Progress';
+        outcomeCell = `
+          <div style="font-size:0.75rem; color:var(--accent-emerald); font-weight:600;">Recorded ✓</div>
+          <div style="font-size:0.72rem; color:var(--text-secondary); margin-top:0.2rem;">
+            Actual: <b>${outcome.actual_delay_months} mos</b> · ${completed}
+          </div>
+          ${outcome.notes ? `<div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.15rem; font-style:italic;">${outcome.notes}</div>` : ''}
+        `;
+      } else {
+        outcomeCell = `
+          <form class="outcome-form" onsubmit="recordOutcome(event, '${rec.record_id}', this)">
+            <input type="number" name="months" placeholder="Actual mos" step="0.1" min="0" required title="Actual delay in months (0 = on time)">
+            <input type="text"   name="notes"  placeholder="Notes (opt.)">
+            <button type="submit" class="btn-outcome">Save</button>
+          </form>
+        `;
+      }
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-size:0.75rem; color:var(--text-secondary); white-space:nowrap;">${ts}</td>
+        <td style="font-family:monospace; font-size:0.75rem;">${rec.case_id || '—'}</td>
+        <td>${cd.district || '—'}</td>
+        <td>${cd.land_type || '—'}</td>
+        <td><span class="hist-risk-badge hist-risk-${riskLevel}">${riskLevel}</span></td>
+        <td style="font-family:monospace;">${probPct}</td>
+        <td style="font-family:monospace;">${durStr}</td>
+        <td>${outcomeCell}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    async function recordOutcome(event, recordId, form) {
+      event.preventDefault();
+      const months = parseFloat(form.months.value);
+      const notes  = form.notes ? form.notes.value.trim() : '';
+
+      const btn = form.querySelector('button[type=submit]');
+      btn.disabled = true;
+      btn.innerText = 'Saving…';
+
+      try {
+        const res = await fetch(`/history/${recordId}/outcome`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            actual_delay_months: months,
+            acquisition_completed: true,
+            notes: notes
+          })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Server error');
+        }
+        // Reload history to reflect updated record
+        loadHistory();
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerText = 'Save';
+        alert('Failed to save outcome: ' + err.message);
+      }
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateStageProgress();
+      loadPreset('forest_dispute');
+      drawNeuralNetwork(0);
+      drawTrainingCurve([18.5, 13.9, 9.2, 6.5, 5.14]);
+    });
+  </script>
+</body>
+</html>

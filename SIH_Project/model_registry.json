@@ -1,0 +1,20 @@
+{
+  "active_production_version": null,
+  "history": [
+    {
+      "version": 1,
+      "train_date": "2026-09-11T19:36:26.918001+00:00",
+      "staging_path": "models\\staging\\model_v1.pt",
+      "status": "REJECTED",
+      "passed_automated_gate": false,
+      "rejection_reason": "Candidate overall AUROC (0.6831) degraded compared to Production (0.6866).",
+      "metrics": {
+        "overall": {
+          "auroc_delta": -0.0035830843340287633
+        }
+      },
+      "approver": null,
+      "approved_at": null
+    }
+  ]
+}

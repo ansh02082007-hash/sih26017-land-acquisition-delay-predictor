@@ -1,0 +1,238 @@
+[
+  {
+    "record_id": "1d8365fc-e86e-4b34-bc61-f544927157a0",
+    "timestamp": "2026-09-11T22:34:05.144041+00:00",
+    "case_id": "LA-4351",
+    "case_data": {
+      "case_id": "LA-4351",
+      "pin_code": "500001",
+      "district": "Hyderabad",
+      "land_type": "Forest",
+      "rfctlarr_stage": "Award Enquiry (Sec 21-23)",
+      "land_parcel_area_acres": 65.5,
+      "compensation_amount_lakhs": 420.0,
+      "days_since_notification": 380.0,
+      "number_of_displaced_families": 32.0,
+      "litigation_cases_count": 2.0,
+      "social_vulnerability_index": 0.72,
+      "official_processing_speed_score": 3.8
+    },
+    "prediction": {
+      "case_id": "LA-4351",
+      "delay_probability": 0.6133,
+      "is_delay_predicted": true,
+      "predicted_delay_months": 30.3,
+      "raw_duration_estimate_months": 30.3,
+      "confidence_band": {
+        "lower_months": 25.7,
+        "upper_months": 34.8
+      },
+      "stage": "Award Enquiry (Sec 21-23)",
+      "risk_level": "HIGH"
+    },
+    "outcome": null
+  },
+  {
+    "record_id": "51cea984-cb27-4a5b-bcfa-dc45f50dadad",
+    "timestamp": "2026-09-11T22:34:52.508347+00:00",
+    "case_id": "LA-9962",
+    "case_data": {
+      "case_id": "LA-9962",
+      "pin_code": "500001",
+      "district": "Hyderabad",
+      "land_type": "Forest",
+      "rfctlarr_stage": "Award Enquiry (Sec 21-23)",
+      "land_parcel_area_acres": 65.5,
+      "compensation_amount_lakhs": 420.0,
+      "days_since_notification": 380.0,
+      "number_of_displaced_families": 32.0,
+      "litigation_cases_count": 2.0,
+      "social_vulnerability_index": 0.72,
+      "official_processing_speed_score": 3.8
+    },
+    "prediction": {
+      "case_id": "LA-9962",
+      "delay_probability": 0.6133,
+      "is_delay_predicted": true,
+      "predicted_delay_months": 30.3,
+      "raw_duration_estimate_months": 30.3,
+      "confidence_band": {
+        "lower_months": 25.7,
+        "upper_months": 34.8
+      },
+      "stage": "Award Enquiry (Sec 21-23)",
+      "risk_level": "HIGH"
+    },
+    "outcome": null
+  },
+  {
+    "record_id": "a103ba01-a2b7-4de1-9f6f-81136260d453",
+    "timestamp": "2026-09-11T22:39:21.169440+00:00",
+    "case_id": "LA-1693",
+    "case_data": {
+      "case_id": "LA-1693",
+      "pin_code": "500001",
+      "district": "Hyderabad",
+      "land_type": "Forest",
+      "rfctlarr_stage": "Award Enquiry (Sec 21-23)",
+      "land_parcel_area_acres": 65.5,
+      "compensation_amount_lakhs": 420.0,
+      "days_since_notification": 380.0,
+      "number_of_displaced_families": 32.0,
+      "litigation_cases_count": 2.0,
+      "social_vulnerability_index": 0.72,
+      "official_processing_speed_score": 3.8
+    },
+    "prediction": {
+      "case_id": "LA-1693",
+      "delay_probability": 0.6133,
+      "is_delay_predicted": true,
+      "predicted_delay_months": 30.3,
+      "raw_duration_estimate_months": 30.3,
+      "confidence_band": {
+        "lower_months": 25.7,
+        "upper_months": 34.8
+      },
+      "stage": "Award Enquiry (Sec 21-23)",
+      "risk_level": "HIGH"
+    },
+    "outcome": {
+      "actual_delay_months": 50.0,
+      "acquisition_completed": true,
+      "notes": "",
+      "feedback_timestamp": "2026-09-11T22:39:46.316644+00:00"
+    }
+  },
+  {
+    "record_id": "783b9aad-af6d-4624-99e5-ed70f8b9f28b",
+    "timestamp": "2026-09-11T22:40:35.901002+00:00",
+    "case_id": "LA-3449",
+    "case_data": {
+      "case_id": "LA-3449",
+      "pin_code": "500001",
+      "district": "Hyderabad",
+      "land_type": "Forest",
+      "rfctlarr_stage": "Award Enquiry (Sec 21-23)",
+      "land_parcel_area_acres": 65.5,
+      "compensation_amount_lakhs": 420.0,
+      "days_since_notification": 380.0,
+      "number_of_displaced_families": 32.0,
+      "litigation_cases_count": 2.0,
+      "social_vulnerability_index": 0.61,
+      "official_processing_speed_score": 2.5
+    },
+    "prediction": {
+      "case_id": "LA-3449",
+      "delay_probability": 0.6213,
+      "is_delay_predicted": true,
+      "predicted_delay_months": 30.2,
+      "raw_duration_estimate_months": 30.2,
+      "confidence_band": {
+        "lower_months": 25.7,
+        "upper_months": 34.7
+      },
+      "stage": "Award Enquiry (Sec 21-23)",
+      "risk_level": "HIGH"
+    },
+    "outcome": null
+  },
+  {
+    "record_id": "6125f704-27dd-44ce-8341-80078d6e1e26",
+    "timestamp": "2026-09-11T22:40:41.317851+00:00",
+    "case_id": "LA-6285",
+    "case_data": {
+      "case_id": "LA-6285",
+      "pin_code": "500001",
+      "district": "Hyderabad",
+      "land_type": "Forest",
+      "rfctlarr_stage": "Award Enquiry (Sec 21-23)",
+      "land_parcel_area_acres": 65.5,
+      "compensation_amount_lakhs": 420.0,
+      "days_since_notification": 380.0,
+      "number_of_displaced_families": 32.0,
+      "litigation_cases_count": 2.0,
+      "social_vulnerability_index": 0.61,
+      "official_processing_speed_score": 10.0
+    },
+    "prediction": {
+      "case_id": "LA-6285",
+      "delay_probability": 0.536,
+      "is_delay_predicted": true,
+      "predicted_delay_months": 30.9,
+      "raw_duration_estimate_months": 30.9,
+      "confidence_band": {
+        "lower_months": 26.3,
+        "upper_months": 35.5
+      },
+      "stage": "Award Enquiry (Sec 21-23)",
+      "risk_level": "HIGH"
+    },
+    "outcome": null
+  },
+  {
+    "record_id": "0873109b-ad7b-443c-9646-136504c6847a",
+    "timestamp": "2026-09-11T22:40:49.350984+00:00",
+    "case_id": "LA-6025",
+    "case_data": {
+      "case_id": "LA-6025",
+      "pin_code": "500001",
+      "district": "Hyderabad",
+      "land_type": "Forest",
+      "rfctlarr_stage": "Award Enquiry (Sec 21-23)",
+      "land_parcel_area_acres": 65.5,
+      "compensation_amount_lakhs": 420.0,
+      "days_since_notification": 380.0,
+      "number_of_displaced_families": 32.0,
+      "litigation_cases_count": 1.0,
+      "social_vulnerability_index": 0.51,
+      "official_processing_speed_score": 10.0
+    },
+    "prediction": {
+      "case_id": "LA-6025",
+      "delay_probability": 0.4881,
+      "is_delay_predicted": false,
+      "predicted_delay_months": 25.0,
+      "raw_duration_estimate_months": 25.0,
+      "confidence_band": {
+        "lower_months": 21.3,
+        "upper_months": 28.8
+      },
+      "stage": "Award Enquiry (Sec 21-23)",
+      "risk_level": "MEDIUM"
+    },
+    "outcome": null
+  },
+  {
+    "record_id": "d6a4a2ad-4c52-4a38-a2ac-cfc487eab51a",
+    "timestamp": "2026-09-12T06:22:36.682544+00:00",
+    "case_id": "LA-9115",
+    "case_data": {
+      "case_id": "LA-9115",
+      "pin_code": "500001",
+      "district": "Hyderabad",
+      "land_type": "Forest",
+      "rfctlarr_stage": "Award Enquiry (Sec 21-23)",
+      "land_parcel_area_acres": 65.5,
+      "compensation_amount_lakhs": 420.0,
+      "days_since_notification": 380.0,
+      "number_of_displaced_families": 32.0,
+      "litigation_cases_count": 2.0,
+      "social_vulnerability_index": 0.72,
+      "official_processing_speed_score": 3.8
+    },
+    "prediction": {
+      "case_id": "LA-9115",
+      "delay_probability": 0.6133,
+      "is_delay_predicted": true,
+      "predicted_delay_months": 30.3,
+      "raw_duration_estimate_months": 30.3,
+      "confidence_band": {
+        "lower_months": 25.7,
+        "upper_months": 34.8
+      },
+      "stage": "Award Enquiry (Sec 21-23)",
+      "risk_level": "HIGH"
+    },
+    "outcome": null
+  }
+]
