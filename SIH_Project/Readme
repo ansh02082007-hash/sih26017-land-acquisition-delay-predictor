@@ -1,0 +1,41 @@
+# Land Acquisition Delay Prediction System (SIH26017)
+
+An offline-first predictive analytics system built for the Ministry of Rural Development to forecast infrastructure project feasibility and land acquisition bottlenecks under the RFCTLARR Act[cite: 1]. It features a Wide & Deep Dual-Head Neural Network, SHAP explainability, and a Human-in-the-Loop (HITL) governance framework[cite: 1].
+
+> *Note: Developed as a Smart India Hackathon project. Although the complete system architecture, pipeline, and models were successfully engineered, our team was ultimately unable to present it during the final evaluation due to an unforeseen family emergency.*
+
+---
+
+## 🏗️ System Architecture & Core Modules
+
+* **Neural Network Core (`model.py`, `losses.py`):** Wide & Deep architecture with multi-task dual-head outputs[cite: 1]. **Head A** uses Focal Loss to predict binary delay risk probability, while **Head B** uses masked Huber Loss to calculate overrun duration in months strictly for delayed cases[cite: 1].
+* **Data Engineering (`preprocessing.py`):** Handles CAG/RTI tabular data using dense entity embeddings for high-cardinality features (PIN codes, districts), one-hot encoding, log transformations ($\log_{1p}$), and robust scaling[cite: 1].
+* **Backend & Dashboard (`app.py`, `predictor.py`, `explain.py`):** FastAPI-powered REST service paired with a dark-mode e-governance UI (`index.html`) featuring visual gauges, stage progression tracking, and SHAP feature attribution waterfall charts[cite: 1].
+* **HITL Governance (`retrain.py`):** Implements stratified experience replay and Elastic Weight Consolidation (EWC) to prevent catastrophic forgetting, backed by automated multi-slice validation gates and administrative sign-offs[cite: 1].
+* **Local Offline AI Stack:** Engineered entirely offline with zero external API dependencies using Ollama (`Qwen2.5-Coder:7b`) and VS Code/Cline agents[cite: 1].
+
+---
+
+## 📂 Project Repository Structure
+
+| File | Primary Responsibility |
+| :--- | :--- |
+| **`config.py`** | Centralized configurations and hyperparameters[cite: 1] |
+| **`preprocessing.py`** | Data cleaning, dense embeddings, scaling, and missingness audits[cite: 1] |
+| **`model.py`** | Wide & Deep neural network with dual heads[cite: 1] |
+| **`losses.py`** | Custom Focal loss and masked Huber regression loss[cite: 1] |
+| **`train.py`** | Stratified training loop with Cosine Annealing Warm Restarts[cite: 1] |
+| **`retrain.py`** | Experience Replay, EWC, and governance staging pipeline[cite: 1] |
+| **`explain.py`** | SHAP attributions and waterfall generation for Head A and Head B[cite: 1] |
+| **`predictor.py`** | Production inference wrapper for FastAPI & CLI[cite: 1] |
+| **`app.py`** | FastAPI backend serving REST API endpoints and web dashboard[cite: 1] |
+| **`templates/index.html`** | Interactive modern dark-mode e-governance UI[cite: 1] |
+
+---
+
+## 🛠️ Tech Stack
+
+* **Core Frameworks:** Python, PyTorch, FastAPI, HTML5/CSS Dashboard[cite: 1]
+* **Databases & Geospatial:** PostgreSQL / PostGIS, Leaflet.js[cite: 1]
+* **ML & MLOps:** Scikit-Learn, SHAP, Joblib, Custom Focal & Huber Losses, EWC Governance[cite: 1]
+* **Local AI Tooling:** Ollama (`Qwen2.5-Coder:7b`), VS Code, Cline Agent Workflow[cite: 1]
